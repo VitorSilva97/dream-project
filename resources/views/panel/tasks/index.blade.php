@@ -19,6 +19,20 @@
             </div>
         </div>
 
+        {{-- Filtro de usuários --}}
+        <div class="mt-4">
+            <label for="userFilter">Filtrar por Usuário:</label>
+            <select id="userFilter" class="form-select">
+                <option value="all" @if(request()->get('user_id') === 'all') selected @endif>Ver todas</option>
+                @foreach($users as $u)
+                <option value="{{ $u->id }}" @if(request()->get('user_id') == $u->id || (request()->get('user_id') == ''
+                    && $u->id == $user->id)) selected @endif>
+                    {{ $u->name }}
+                </option>
+                @endforeach
+            </select>
+        </div>
+
         {{-- Tabela tarefas --}}
         <div class="mt-4 border p-2 rounded shadow">
             <table id="tableTasks" class="table table-striped table-bordered">
@@ -58,7 +72,7 @@
                             @endswitch
                         </td>
                         <td>
-                            <a href="#" class="btn btn-sm btn-primary">Editar</a>
+                            <a href="{{route('tarefas.edit', $task->id)}}" class="btn btn-sm btn-primary">Editar</a>
 
                             <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
@@ -71,18 +85,38 @@
                         <td>Nenhuma tarefa cadastrada.</td>
                     </tr>
                     @endforelse
-
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
 <script>
     $(document).ready(function () {
-        $('#tableTasks').DataTable({
+        var table = $('#tableTasks').DataTable({
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
             }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#userFilter').on('change', function () {
+            var userId = $(this).val();
+
+            if (userId === "") {
+                // Para 'Ver todas', pegamos todos os IDs dos usuários
+                userId = "{{ implode(',', $users->pluck('id')->toArray()) }}"; // Pegamos todos os IDs
+            }
+
+            var url = new URL(window.location.href);
+            if (userId) {
+                url.searchParams.set('user_id',
+                    userId); // Adiciona o parâmetro user_id com todos os IDs ou um ID específico
+            } else {
+                url.searchParams.delete('user_id'); // Remove o filtro
+            }
+            window.location.href = url.toString(); // Redireciona com o novo filtro
         });
     });
 </script>
