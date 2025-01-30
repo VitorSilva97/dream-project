@@ -9,16 +9,26 @@
     <div class="sidebar-wrapper">
         <nav class="mt-2">
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
-                <li class="nav-item menu-open">
-                    <a href="{{ route('painel.index') }}"
-                        class="nav-link">
+                <li class="nav-item">
+                    <a href="{{ route('painel.index') }}" class="nav-link {{ Route::is('/painel') ? 'active' : '' }}">
                         <p>
                             Painel
                         </p>
                     </a>
-                    <a href="{{route('usuarios.index')}}" class="nav-link {{ Route::is('/painel/usuarios*') ? 'active' : '' }}">
+                </li>
+                <li class="nav-item">
+                    <a href="{{route('usuarios.index')}}"
+                        class="nav-link {{ Route::is('/painel/usuarios*') ? 'active' : '' }}">
                         <p>
                             Usuários
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{route('tarefas.index')}}"
+                        class="nav-link {{ Route::is('/painel/tarefas*') ? 'active' : '' }}">
+                        <p>
+                            Tarefas
                         </p>
                     </a>
                 </li>
