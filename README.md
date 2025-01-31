@@ -11,7 +11,7 @@ Este projeto foi desenvolvido utilizando as seguintes tecnologias:
 - **PHP 8.3**
 - **Laravel 10.1**
 - **Bootstrap 5**
-- **jQuery (última versão)**
+- **jQuery3**
 - **Composer**
 - **NPM**
 
