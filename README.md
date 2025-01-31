@@ -36,3 +36,21 @@ Clone o repositório com o seguinte comando:
 
 ```bash
 git clone https://github.com/VitorSilva97/dream-project.git
+
+### 2.Instale as dependências do Composer:
+
+Instale as dependências do Composer:
+
+```bash
+cd dream-project
+composer install
+
+Instale as dependências do NPM:
+
+```bash
+npm install
+
+Crie o arquivo .env:
+
+```bash
+cp .env.example .env
