@@ -7,6 +7,7 @@ use App\Http\Requests\StoreUsuarioRequest;
 use App\Http\Requests\UpdateUsuarioRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -15,8 +16,9 @@ class UserController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
         $users = User::all();
-        return view('panel.users.index', compact('users'));
+        return view('panel.users.index', compact('users', 'user'));
     }
 
     /**
@@ -24,6 +26,8 @@ class UserController extends Controller
      */
     public function create()
     {
+        $user = Auth::user();
+        $this->authorize('create', $user);
         return view('panel.users.create');
     }
 
@@ -35,9 +39,11 @@ class UserController extends Controller
         // Usando Form Request
         $dadosValidados = $request->validated();
         User::create($dadosValidados);
-        return redirect()->route('usuarios.index')->with('toastr', [
-            'type' => 'success',
-            'message' => 'Usuário cadastrado com sucesso!',
+        return redirect()->route('usuarios.index')->with([
+            'toastr' => [
+                'type' => 'success',
+                'message' => 'Usuário cadastrado com sucesso!'
+            ]
         ]);
     }
 
@@ -55,6 +61,7 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::find($id);
+        $this->authorize('update', $user);
         return view('panel.users.edit', compact('user'));
     }
 
@@ -63,17 +70,22 @@ class UserController extends Controller
      */
     public function update(UpdateUsuarioRequest $request, string $id)
     {
-        $dadosValidados = $request->validated();
         $user = User::findOrFail($id);
+        $this->authorize('update', $user);
+        $request->merge(['user' => $user]);
+        $dadosValidados = $request->validated();
+
         if (empty($dadosValidados['password'])) {
             unset($dadosValidados['password']);
         } else {
             $dadosValidados['password'] = bcrypt($dadosValidados['password']);
         }
         $user->update($dadosValidados);
-        return redirect()->route('usuarios.index')->with('toastr', [
-            'type' => 'success',
-            'message' => 'Usuário atualizado com sucesso!',
+        return redirect()->route('usuarios.index')->with([
+            'toastr' => [
+                'type' => 'success',
+                'message' => 'Usuário atualizado com sucesso!'
+            ]
         ]);
     }
 
@@ -84,11 +96,21 @@ class UserController extends Controller
     {
 
         $user = User::findOrFail($id);
+        $this->authorize('delete', $user);
+        if ($user->tasks()->exists()) {
+            // Se o usuário tiver tarefas, redireciona com erro
+            return redirect()->route('usuarios.index')->with('toastr', [
+                'type' => 'error',
+                'message' => 'Não é possível excluir o usuário, pois ele possui tarefas associadas.'
+            ]);
+        }
         $user->delete();
 
-        return redirect()->route('usuarios.index')->with('toastr', [
-            'type' => 'success',
-            'message' => 'Usuário excluído com sucesso!',
+        return redirect()->route('usuarios.index')->with([
+            'toastr' => [
+                'type' => 'success',
+                'message' => 'Usuário removido com sucesso!'
+            ]
         ]);
     }
 }

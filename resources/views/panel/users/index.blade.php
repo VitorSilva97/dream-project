@@ -13,11 +13,13 @@
             </div>
         </div>
 
+        @can('create', $user)
         <div class="row col-12">
             <div class="col-span-2">
                 <a href="{{route('usuarios.create')}}" class="btn btn-primary">Novo usuário</a>
             </div>
         </div>
+        @endcan
 
         {{-- Tabela usuários --}}
         <div class="mt-4 border p-2 rounded shadow">
@@ -53,12 +55,16 @@
                             @endswitch
                         </td>
                         <td>
+                            @can('update', $user)
                             <a href="{{route('usuarios.edit', $user->id)}}" class="btn btn-sm btn-primary">Editar</a>
+                            @endcan
 
+                            @can('delete', $user)
                             <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
                                 data-bs-target="#deleteModal{{ $user->id }}">
                                 Excluir
                             </button>
+                            @endcan
 
                             <div class="modal fade" id="deleteModal{{ $user->id }}" tabindex="-1"
                                 aria-labelledby="deleteModalLabel{{ $user->id }}" aria-hidden="true">

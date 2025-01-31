@@ -17,7 +17,8 @@ class UsersSeeder extends Seeder
             'name' => 'Vitor Silva',
             'email' => 'vitor@dreamcode.com.br',
             'password' => 'teste123',
-            'status' => true
+            'status' => true,
+            'permission' => 'Admin'
         ]);
     }
 }

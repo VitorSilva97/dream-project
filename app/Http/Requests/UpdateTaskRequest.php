@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTaskRequest extends FormRequest
+class UpdateTaskRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,11 +30,6 @@ class StoreTaskRequest extends FormRequest
         ];
     }
 
-    /**
-     * Customize the error messages for attributes.
-     *
-     * @return array
-     */
     public function messages()
     {
         return [

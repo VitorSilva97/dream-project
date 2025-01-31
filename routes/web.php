@@ -14,6 +14,7 @@ Route::middleware(['auth', 'verified'])->group(function(){
 
     Route::resource('/painel/usuarios', UserController::class)->except(['show']); //ou only() -> apenas
     Route::resource('/painel/tarefas', TaskController::class)->except(['show']);
+    Route::put('/painel/tarefas/{task}', [TaskController::class, 'upStatus'])->name('upStatus');
 });
 
 require __DIR__.'/auth.php';

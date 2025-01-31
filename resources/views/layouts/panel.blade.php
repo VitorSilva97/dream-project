@@ -7,9 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!-- Importando os arquivos CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ asset('css/adminlte.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/dataTable.css') }}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs5-toast@1.0.1/dist/css/bootstrap-toast.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
         integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
@@ -23,7 +24,7 @@
         integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 
-     <!-- Importando os scripts JS -->
+    <!-- Importando os scripts JS -->
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -42,7 +43,7 @@
     <script src="{{ asset('js/dataTable.js') }}"></script>
 
     <!-- Toast (se necessário) -->
-    <script src="https://cdn.jsdelivr.net/npm/bs5-toast@1.0.1/dist/js/bootstrap-toast.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <!-- Scripts adicionais -->
     <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
@@ -61,30 +62,53 @@
 
         <main class="app-main">
             @yield('content')
+            @if(session('toastr'))
+    <script>
+        var toastrType = "{{ session('toastr.type') }}"; // Sucesso, erro, etc.
+        var toastrMessage = "{{ session('toastr.message') }}"; // A mensagem que você quer mostrar
+
+        // Configuração do Toastr
+        var toastrOptions = {
+            "closeButton": true,
+            "progressBar": true,
+            "timeOut": 5000
+        };
+
+        // Exibindo o Toastr com os dados da sessão
+        if (toastrType && toastrMessage) {
+            toastr[toastrType](toastrMessage, '', toastrOptions);
+        }
+    </script>
+@endif
         </main>
 
         <x-footer-panel />
     </div>
 
-<style>
-    .user-images-task {
-        display: flex;
-        position: relative;
-        padding-left: -10px; /* Padding negativo para sobrepor as imagens */
-    }
+    <style>
+        .user-images-task {
+            display: flex;
+            position: relative;
+            padding-left: -10px;
+            /* Padding negativo para sobrepor as imagens */
+        }
 
-    .user-image-task {
-        width: 32px; /* Reduzindo o tamanho das imagens */
-        height: 32px;
-        border-radius: 50%;
-        margin-left: -10px; /* Ajustando a sobreposição para mais imagens */
-        z-index: 1;
-    }
+        .user-image-task {
+            width: 32px;
+            /* Reduzindo o tamanho das imagens */
+            height: 32px;
+            border-radius: 50%;
+            margin-left: -10px;
+            /* Ajustando a sobreposição para mais imagens */
+            z-index: 1;
+        }
 
-    .user-image-task:first-child {
-        margin-left: 0; /* A primeira imagem não terá margem à esquerda */
-    }
-</style>
+        .user-image-task:first-child {
+            margin-left: 0;
+            /* A primeira imagem não terá margem à esquerda */
+        }
+    </style>
 
 </body>
+
 </html>

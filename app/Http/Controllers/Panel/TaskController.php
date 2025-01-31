@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -22,32 +23,41 @@ class TaskController extends Controller
         // Inicia a consulta das tarefas
         $tasksQuery = Task::query();
 
-        // Verifica se o parâmetro user_id está na URL
+        // Filtro de usuários
         if ($request->has('user_id') && $request->user_id !== '') {
-            $userIds = explode(',', $request->user_id);  // Se o user_id tiver uma lista, converta para array
+            $userIds = explode(',', $request->user_id);  // Se o user_id tiver uma lista, converte para array
 
-            // Se o user_id for igual a 'all', mostramos todas as tarefas
             if ($request->user_id === 'all') {
                 $tasksQuery = Task::query();  // Carregar todas as tarefas
             } else {
-                // Caso contrário, filtra pelas tarefas dos usuários selecionados
                 $tasksQuery->whereHas('users', function ($query) use ($userIds) {
                     $query->whereIn('users.id', $userIds);
                 });
             }
         } else {
-            // Se não houver filtro, por padrão, filtra apenas as tarefas do usuário logado
+            // Se não houver filtro de usuário, por padrão, filtra apenas as tarefas do usuário logado
             $tasksQuery->whereHas('users', function ($query) use ($user) {
                 $query->where('users.id', $user->id);
             });
         }
 
-        // Recupera as tarefas com o filtro aplicado
+        // Filtro de status
+        if ($request->has('status') && $request->status !== '') {
+            $status = $request->status;
+
+            // Se o filtro de status for 'all', não filtra o status
+            if ($status !== 'all') {
+                $tasksQuery->where('status', $status);
+            }
+        }
+
+        // Recupera as tarefas com os filtros aplicados
         $tasks = $tasksQuery->get();
 
-        // Retorna a view com as tarefas, usuários e usuário logado
+        // Retorna a view com as tarefas, usuários e o usuário logado
         return view('panel.tasks.index', compact('tasks', 'users', 'user'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -65,21 +75,17 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request)
     {
-        $validatedData = $request->validated();
-
-        $task = Task::create([
-            'title' => $validatedData['title'],
-            'description' => $validatedData['description'],
-            'status' => $validatedData['status'],
-        ]);
-
+        $dadosValidados = $request->validated();
+        $task = Task::create($dadosValidados);
         $users = $request['users'];
         $task->users()->attach($users);
         $task->users()->attach(Auth::user()->id);
 
-        return redirect()->route('tarefas.index')->with('toastr', [
-            'type' => 'success',
-            'message' => 'Tarefa cadastrada com sucesso!',
+        return redirect()->route('tarefas.index')->with([
+            'toastr' => [
+                'type' => 'success',
+                'message' => 'Tarefa cadastrada com sucesso!'
+            ]
         ]);
     }
 
@@ -96,22 +102,43 @@ class TaskController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $task = Task::find($id);
+        $users = User::where('status', 1)->get();
+        $taskUsers = $task->users->pluck('id')->toArray();
+        return view('panel.tasks.edit', compact('task', 'users', 'taskUsers'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateTaskRequest $request, string $id)
     {
-        //
+        $dadosValidados = $request->validated();
+        $task = Task::findOrFail($id);
+        $task->update($dadosValidados);
+        $task->users()->sync($request->input('users', []));
+
+        return redirect()->route('tarefas.index')->with([
+            'toastr' => [
+                'type' => 'success',
+                'message' => 'Tarefa atualizada com sucesso!'
+            ]
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $task = Task::findOrFail($id);
+        $task->delete();
+
+        return redirect()->route('tarefas.index')->with([
+            'toastr' => [
+                'type' => 'success',
+                'message' => 'Tarefa removida com sucesso!'
+            ]
+        ]);
     }
 }
