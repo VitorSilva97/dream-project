@@ -60,7 +60,7 @@ Crie o arquivo .env:
 cp .env.example .env
 ```
 ### 5.Configuração do Ambiente:
-Configuração do Ambiente:
+Configuração do Ambiente (configuração no .env):
 Usando XAMPP:
 ```bash
 APP_URL=http://localhost
@@ -70,7 +70,7 @@ Usando Laravel Herd:
 APP_URL=http://dream-project.test/
 ```
 ### 6.Configuração de Envio de E-mails:
-Configuração de Envio de E-mails:
+Configuração de Envio de E-mails (configuração no .env):
 ```bash
 MAIL_MAILER=smtp
 MAIL_HOST=mailpit
@@ -93,22 +93,9 @@ php artisan migrate
 ```bash
 php artisan db:seed --class=UserSeeder
 ```
-```bash
-User::create([
-    'name' => 'User Teste',
-    'email' => 'teste@gmail.com',
-    'password' => bcrypt('TesTe@123'),
-    'status' => true,
-    'permission' => 'Admin',
-]);
-```
-### 10.Compile os Assets:
-```bash
-npm run dev
-```
 
 ## Acessando o Projeto
 
 - **Se estiver usando XAMPP:** http://localhost
-- **Se estiver usando Homestead:** http://dream-project.test/
+- **Se estiver usando Herd:** http://dream-project.test/
 
