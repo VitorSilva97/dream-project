@@ -22,10 +22,15 @@
 
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <img src="https://ui-avatars.com/api/?name={{Auth::user()->name}}" class="user-image rounded-circle shadow"
-                        alt="User Image" />
-                    <span class="d-none d-md-inline">{{Auth::user()->name}}</span>
+                    <img src="https://ui-avatars.com/api/?name={{Auth::user()->name}}"
+                        class="user-image rounded-circle shadow" alt="User Image" />
                 </a>
+            </li>
+            <li class="nav-item">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="nav-link btn btn-link">Sair</button>
+                </form>
             </li>
 
         </ul>

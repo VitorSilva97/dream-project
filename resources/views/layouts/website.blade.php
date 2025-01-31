@@ -25,6 +25,24 @@
 <body>
     <main>
         @yield('content')
+        @if(session('toastr'))
+    <script>
+        var toastrType = "{{ session('toastr.type') }}"; // Sucesso, erro, etc.
+        var toastrMessage = "{{ session('toastr.message') }}"; // A mensagem que você quer mostrar
+
+        // Configuração do Toastr
+        var toastrOptions = {
+            "closeButton": true,
+            "progressBar": true,
+            "timeOut": 5000
+        };
+
+        // Exibindo o Toastr com os dados da sessão
+        if (toastrType && toastrMessage) {
+            toastr[toastrType](toastrMessage, '', toastrOptions);
+        }
+    </script>
+    @endif
     </main>
 </body>
 
